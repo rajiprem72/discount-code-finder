@@ -6,12 +6,15 @@
 <title>Discount Code Finder</title>
 <style>
   body { font-family: Arial, sans-serif; text-align: center; margin: 0; padding: 0; }
-  #videoContainer { width: 100%; max-width: 360px; margin: 20px auto; position: relative; }
-  #player { width: 100%; aspect-ratio: 9/16; }
+  h1 { margin-top: 20px; }
+  #videoContainer { width: 100%; max-width: 400px; margin: 20px auto; position: relative; }
+  iframe { width: 100%; aspect-ratio: 9/16; }
   #getCodeBtn { display: none; padding: 10px 20px; font-size: 18px; cursor: pointer; margin-top: 10px; }
   #couponPage { display: none; margin-top: 20px; }
-  select, button { padding: 8px; font-size: 16px; }
-  #couponResult { margin-top: 15px; font-size: 18px; font-weight: bold; text-align: left; width: 80%; margin: 15px auto; }
+  select { padding: 8px; width: 220px; }
+  .coupon-box { border: 1px solid #ccc; border-radius: 8px; padding: 10px; margin: 10px auto; width: 90%; max-width: 400px; text-align: left; }
+  button.coupon-btn { background: #007BFF; color: #fff; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer; }
+  button.coupon-btn:hover { background: #0056b3; }
 </style>
 </head>
 <body>
@@ -19,95 +22,121 @@
 <h1>Discount Code Finder</h1>
 <p>Watch the video below. The discount code finder will appear after the video completes.</p>
 <p><a href="https://www.youtube.com/@PremanandhanNarayanan/?sub_confirmation=1" target="_blank">
-  Subscribe to our YouTube Channel</a></p>
+Subscribe to our YouTube Channel</a></p>
 
 <div id="videoContainer">
   <div id="player"></div>
-  <button id="getCodeBtn">Get My Discount Code</button>
+  <button id="getCodeBtn">Find My Coupons</button>
 </div>
 
 <div id="couponPage">
   <label for="merchantSelect">Select Merchant:</label><br>
   <select id="merchantSelect">
-    <optgroup label="E-commerce & General Shopping">
-      <option value="Amazon">Amazon</option>
-      <option value="Myntra">Myntra</option>
-      <option value="Ajio">Ajio</option>
-      <option value="Tata Cliq">Tata Cliq</option>
-      <option value="Snapdeal">Snapdeal</option>
-    </optgroup>
-    <optgroup label="Food & Grocery">
-      <option value="Swiggy">Swiggy</option>
-      <option value="Zomato">Zomato</option>
-      <option value="Blinkit">Blinkit (formerly Grofers)</option>
-      <option value="Zepto">Zepto</option>
-    </optgroup>
+    <option value="">-- Select --</option>
   </select>
   <button onclick="findCoupon()">Find Coupon</button>
   <div id="couponResult"></div>
 </div>
 
 <script>
-  let selectedVideo;
-  let player;
-
-  // Load video list from JSON
+  // ====== Load YouTube Shorts Playlist Video ======
   fetch('https://raw.githubusercontent.com/rajiprem72/discount-code-finder/main/videos.json')
     .then(response => response.json())
     .then(videos => {
-      selectedVideo = videos[Math.floor(Math.random() * videos.length)];
-      // Load YouTube API
-      let tag = document.createElement('script');
-      tag.src = "https://www.youtube.com/iframe_api";
-      document.body.appendChild(tag);
-
-      window.onYouTubeIframeAPIReady = function() {
-        player = new YT.Player('player', {
-          height: '640',
-          width: '360',
-          videoId: selectedVideo.id,
-          playerVars: {
-            autoplay: 1,
-            controls: 1,
-            rel: 0,
-            modestbranding: 1
-          },
-          events: {
-            onReady: event => event.target.playVideo(),
-            onStateChange: event => {
-              if (event.data === YT.PlayerState.ENDED) {
-                document.getElementById('player').style.display = 'none';
-                document.getElementById('getCodeBtn').style.display = 'inline-block';
-              }
-            }
-          }
-        });
-      };
+      const selectedVideo = videos[Math.floor(Math.random() * videos.length)];
+      loadYouTubeAPI(selectedVideo.id);
     });
 
+  function loadYouTubeAPI(videoId) {
+    let tag = document.createElement('script');
+    tag.src = "https://www.youtube.com/iframe_api";
+    document.body.appendChild(tag);
+
+    window.onYouTubeIframeAPIReady = function () {
+      new YT.Player('player', {
+        videoId: videoId,
+        playerVars: { autoplay: 1, controls: 1, rel: 0, modestbranding: 1 },
+        events: {
+          onReady: event => event.target.playVideo(),
+          onStateChange: event => {
+            if (event.data === YT.PlayerState.ENDED) {
+              document.getElementById('player').style.display = 'none';
+              document.getElementById('getCodeBtn').style.display = 'inline-block';
+            }
+          }
+        }
+      });
+    };
+  }
+
+  // ====== Load Merchants into Dropdown ======
+  fetch('https://raw.githubusercontent.com/rajiprem72/discount-code-finder/main/coupons.json')
+    .then(r => r.json())
+    .then(data => {
+      const merchantSelect = document.getElementById('merchantSelect');
+      const uniqueMerchants = [...new Set(data.map(c => c.merchant))];
+      uniqueMerchants.forEach(m => {
+        let opt = document.createElement('option');
+        opt.value = m;
+        opt.textContent = m;
+        merchantSelect.appendChild(opt);
+      });
+    });
+
+  // ====== Show Coupon Page After Video ======
   document.getElementById("getCodeBtn").addEventListener("click", () => {
     document.getElementById("couponPage").style.display = "block";
     window.scrollTo(0, document.body.scrollHeight);
   });
 
+  // ====== Find Coupons ======
   function findCoupon() {
-    const selectedMerchant = document.getElementById("merchantSelect").value;
+    const merchant = document.getElementById("merchantSelect").value;
     const resultDiv = document.getElementById("couponResult");
+    resultDiv.innerHTML = "";
+
+    if (!merchant) {
+      resultDiv.textContent = "Please select a merchant.";
+      return;
+    }
 
     fetch('https://raw.githubusercontent.com/rajiprem72/discount-code-finder/main/coupons.json')
-      .then(response => response.json())
-      .then(coupons => {
-        const merchantCoupons = coupons.filter(c => c.merchant === selectedMerchant);
-        if (merchantCoupons.length > 0) {
-          let html = `<h3>Available Coupons for ${selectedMerchant}</h3>`;
-          merchantCoupons.forEach(coupon => {
-            html += `<p><b>${coupon.code}</b>: ${coupon.description} 
-            <a href="${coupon.link}" target="_blank">Shop Now</a></p>`;
-          });
-          resultDiv.innerHTML = html;
-        } else {
-          resultDiv.innerHTML = `No coupons available for ${selectedMerchant}.`;
+      .then(r => r.json())
+      .then(data => {
+        const merchantCoupons = data.filter(c => c.merchant === merchant);
+
+        if (merchantCoupons.length === 0) {
+          resultDiv.textContent = `No coupons available for ${merchant}.`;
+          return;
         }
+
+        const title = document.createElement('h3');
+        title.textContent = `Available Coupons for ${merchant}`;
+        resultDiv.appendChild(title);
+
+        merchantCoupons.forEach(coupon => {
+          const box = document.createElement('div');
+          box.className = 'coupon-box';
+
+          const p = document.createElement('p');
+          p.innerHTML = `<b>${coupon.code}</b> – ${coupon.description}`;
+          box.appendChild(p);
+
+          const btn = document.createElement('button');
+          btn.className = 'coupon-btn';
+          btn.textContent = 'Use This Link';
+          btn.onclick = () => {
+            const url = String(coupon.link || '').trim();
+            if (!/^https?:\/\//i.test(url)) {
+              alert('Invalid link.');
+              return;
+            }
+            window.open(url, '_blank', 'noopener,noreferrer');
+          };
+          box.appendChild(btn);
+
+          resultDiv.appendChild(box);
+        });
       });
   }
 </script>
