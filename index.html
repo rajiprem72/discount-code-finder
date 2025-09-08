@@ -1,140 +1,170 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Discount Code Finder</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      margin: 20px;
-    }
-    h1 {
-      color: #333;
-    }
-    #video-container {
-      position: relative;
-      width: 100%;
-      max-width: 360px;
-      margin: 0 auto 20px;
-    }
-    #video-container iframe {
-      width: 100%;
-      aspect-ratio: 9 / 16;
-      border: none;
-    }
-    #couponSection {
-      display: none;
-      margin-top: 20px;
-    }
-    .coupon-box {
-      border: 1px solid #ccc;
-      border-radius: 10px;
-      padding: 15px;
-      margin: 10px auto;
-      max-width: 400px;
-      text-align: left;
-    }
-    .coupon-box a {
-      display: inline-block;
-      margin-top: 8px;
-      padding: 8px 12px;
-      background: #007BFF;
-      color: #fff;
-      border-radius: 5px;
-      text-decoration: none;
-    }
-    .coupon-box a:hover {
-      background: #0056b3;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Discount Code Finder</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+    background: #f7f7f7;
+  }
+  h1 {
+    background: #4CAF50;
+    color: white;
+    padding: 15px;
+    margin: 0;
+  }
+  #videoContainer {
+    width: 100%;
+    max-width: 360px;
+    margin: 20px auto;
+    aspect-ratio: 9/16;
+  }
+  iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    border-radius: 10px;
+  }
+  #getCodeBtn {
+    display: none;
+    padding: 10px 20px;
+    font-size: 18px;
+    margin-top: 15px;
+    cursor: pointer;
+    background: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+  }
+  #couponPage {
+    display: none;
+    margin-top: 20px;
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  }
+  select, button {
+    padding: 10px;
+    font-size: 16px;
+    margin-top: 10px;
+    width: 80%;
+  }
+  .coupon {
+    border-bottom: 1px solid #ddd;
+    padding: 10px 0;
+  }
+  .coupon a {
+    color: #4CAF50;
+    text-decoration: none;
+    font-weight: bold;
+  }
+</style>
 </head>
 <body>
-  <h1>Discount Code Finder</h1>
-  <p>Watch the video below. The discount code finder will appear after the video completes.</p>
-  <p><strong>Subscribe to our YouTube channel:</strong>
-    <a href="https://www.youtube.com/@PremanandhanNarayanan/?sub_confirmation=1" target="_blank">
-      Click here to subscribe
-    </a>
-  </p>
 
-  <div id="video-container">
-    <iframe id="promoVideo" src="https://www.youtube.com/embed/YOUR_SHORTS_VIDEO_ID?enablejsapi=1" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-  </div>
+<h1>Discount Code Finder</h1>
+<p>Watch the video below. The discount code finder will appear after the video completes.</p>
+<p><a href="https://www.youtube.com/@PremanandhanNarayanan/?sub_confirmation=1" target="_blank">
+  Subscribe to our YouTube Channel</a></p>
 
-  <div id="couponSection">
-    <h2>Find Coupons</h2>
-    <label for="merchantSelect">Select Merchant:</label>
-    <select id="merchantSelect">
-      <optgroup label="E-commerce & General Shopping">
-        <option value="Amazon">Amazon</option>
-        <option value="Myntra">Myntra</option>
-        <option value="Ajio">Ajio</option>
-        <option value="Tata Cliq">Tata Cliq</option>
-        <option value="Snapdeal">Snapdeal</option>
-      </optgroup>
-      <optgroup label="Food & Grocery">
-        <option value="Swiggy">Swiggy</option>
-        <option value="Zomato">Zomato</option>
-        <option value="Blinkit">Blinkit (formerly Grofers)</option>
-        <option value="Zepto">Zepto</option>
-      </optgroup>
-    </select>
-    <button id="findCouponBtn">Find Coupons</button>
+<div id="videoContainer">
+  <iframe id="player" src="https://www.youtube.com/embed/kI4LiBxLomk?rel=0&modestbranding=1"
+          allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen></iframe>
+</div>
 
-    <div id="couponResults"></div>
-  </div>
+<button id="getCodeBtn">Get My Discount Code</button>
 
-  <script>
-    // Wait for YouTube video to finish
-    function onYouTubeIframeAPIReady() {
-      new YT.Player('promoVideo', {
-        events: {
-          'onStateChange': function(event) {
-            if (event.data === YT.PlayerState.ENDED) {
-              document.getElementById('couponSection').style.display = 'block';
-            }
-          }
-        }
-      });
-    }
+<div id="couponPage">
+  <h3>Select Merchant</h3>
+  <select id="merchantSelect">
+    <optgroup label="E-commerce & General Shopping">
+      <option value="Amazon">Amazon</option>
+      <option value="Myntra">Myntra</option>
+      <option value="Ajio">Ajio</option>
+      <option value="Tata Cliq">Tata Cliq</option>
+      <option value="Snapdeal">Snapdeal</option>
+    </optgroup>
+    <optgroup label="Food & Grocery">
+      <option value="Swiggy">Swiggy</option>
+      <option value="Zomato">Zomato</option>
+      <option value="Blinkit">Blinkit</option>
+      <option value="Zepto">Zepto</option>
+    </optgroup>
+    <optgroup label="Fashion & Lifestyle">
+      <option value="Nykaa">Nykaa</option>
+      <option value="FirstCry">FirstCry</option>
+      <option value="Lenskart">Lenskart</option>
+    </optgroup>
+    <optgroup label="Travel & Hotels">
+      <option value="MakeMyTrip">MakeMyTrip</option>
+      <option value="Yatra">Yatra</option>
+      <option value="Goibibo">Goibibo</option>
+      <option value="OYO">OYO</option>
+    </optgroup>
+  </select>
+  <br><br>
+  <button onclick="findCoupons()">Find Coupons</button>
+  <div id="couponResult"></div>
+</div>
 
-    // Load YouTube API
-    let tag = document.createElement('script');
-    tag.src = "https://www.youtube.com/iframe_api";
-    document.body.appendChild(tag);
+<script>
+  // Simulated: Show discount section after 10s (replace with video-ended event)
+  setTimeout(() => {
+    document.getElementById("getCodeBtn").style.display = "inline-block";
+  }, 10000);
 
-    document.getElementById('findCouponBtn').addEventListener('click', async () => {
-      const merchant = document.getElementById('merchantSelect').value;
-      const response = await fetch('https://raw.githubusercontent.com/rajiprem72/discount-code-finder/main/coupons.json');
-      const coupons = await response.json();
+  document.getElementById("getCodeBtn").addEventListener("click", () => {
+    document.getElementById("couponPage").style.display = "block";
+    window.scrollTo(0, document.body.scrollHeight);
+  });
 
-      const results = document.getElementById('couponResults');
-      results.innerHTML = '';
+  async function findCoupons() {
+    const merchant = document.getElementById("merchantSelect").value;
+    const resultDiv = document.getElementById("couponResult");
+    resultDiv.innerHTML = "Loading...";
 
-      const merchantCoupons = coupons.filter(c => c.merchant === merchant);
+    try {
+      const couponsRes = await fetch('https://raw.githubusercontent.com/rajiprem72/discount-code-finder/main/coupons.json');
+      const affiliatesRes = await fetch('https://raw.githubusercontent.com/rajiprem72/discount-code-finder/main/affiliates.json');
+      const couponsData = await couponsRes.json();
+      const affiliatesData = await affiliatesRes.json();
 
-      if (merchantCoupons.length > 0) {
-        merchantCoupons.forEach(coupon => {
-          const box = document.createElement('div');
-          box.className = 'coupon-box';
-          box.innerHTML = `
-            <strong>Code:</strong> ${coupon.code}<br>
-            <strong>Description:</strong> ${coupon.description}
+      const matchedCoupons = couponsData.filter(c => c.merchant.toLowerCase() === merchant.toLowerCase());
+      const affiliate = affiliatesData.find(a => a.merchant.toLowerCase() === merchant.toLowerCase());
+
+      if (matchedCoupons.length > 0) {
+        resultDiv.innerHTML = `<h4>Available Coupons for ${merchant}</h4>`;
+        matchedCoupons.forEach(coupon => {
+          resultDiv.innerHTML += `
+            <div class="coupon">
+              <strong>Code:</strong> ${coupon.code}<br>
+              <em>${coupon.description}</em><br>
+              <a href="${coupon.link || affiliate?.link || '#'}" target="_blank">Shop Now</a>
+            </div>
           `;
-          const link = document.createElement('a');
-          link.href = coupon.link;
-          link.target = '_blank';
-          link.rel = 'noopener noreferrer';
-          link.textContent = 'Use This Link';
-          box.appendChild(link);
-          results.appendChild(box);
         });
       } else {
-        results.innerHTML = `<p>No coupons available for ${merchant} at the moment.</p>`;
+        resultDiv.innerHTML = `
+          <p>No coupons currently available for ${merchant}.</p>
+          ${affiliate ? `<a href="${affiliate.link}" target="_blank">Shop at ${merchant}</a>` : ""}
+        `;
       }
-    });
-  </script>
+
+    } catch (error) {
+      resultDiv.innerHTML = "Error loading coupons. Please try again later.";
+    }
+  }
+</script>
+
 </body>
 </html>
