@@ -31,8 +31,33 @@ Subscribe to our YouTube Channel</a></p>
 
 <div id="couponPage">
   <label for="merchantSelect">Select Merchant:</label><br>
-  <select id="merchantSelect">
-    <option value="">-- Select --</option>
+<select id="merchantSelect">
+    <optgroup label="E-commerce & General Shopping">
+      <option value="Amazon">Amazon</option>
+      <option value="Flipkart">Flipkart</option>
+      <option value="Myntra">Myntra</option>
+      <option value="Ajio">Ajio</option>
+      <option value="Tata Cliq">Tata Cliq</option>
+      <option value="Snapdeal">Snapdeal</option>
+    </optgroup>
+    <optgroup label="Food & Grocery">
+      <option value="Swiggy">Swiggy</option>
+      <option value="Zomato">Zomato</option>
+      <option value="BigBasket">BigBasket</option>
+      <option value="Blinkit">Blinkit (formerly Grofers)</option>
+      <option value="Zepto">Zepto</option>
+    </optgroup>
+    <optgroup label="Fashion & Lifestyle">
+      <option value="Nykaa">Nykaa</option>
+      <option value="FirstCry">FirstCry</option>
+      <option value="Lenskart">Lenskart</option>
+    </optgroup>
+    <optgroup label="Travel & Hotels">
+      <option value="MakeMyTrip">MakeMyTrip</option>
+      <option value="Yatra">Yatra</option>
+      <option value="Goibibo">Goibibo</option>
+      <option value="OYO">OYO</option>
+    </optgroup>
   </select>
   <button onclick="findCoupon()">Find Coupon</button>
   <div id="couponResult"></div>
@@ -68,20 +93,6 @@ Subscribe to our YouTube Channel</a></p>
       });
     };
   }
-
-  // ====== Load Merchants into Dropdown ======
-  fetch('https://raw.githubusercontent.com/rajiprem72/discount-code-finder/main/coupons.json')
-    .then(r => r.json())
-    .then(data => {
-      const merchantSelect = document.getElementById('merchantSelect');
-      const uniqueMerchants = [...new Set(data.map(c => c.merchant))];
-      uniqueMerchants.forEach(m => {
-        let opt = document.createElement('option');
-        opt.value = m;
-        opt.textContent = m;
-        merchantSelect.appendChild(opt);
-      });
-    });
 
   // ====== Show Coupon Page After Video ======
   document.getElementById("getCodeBtn").addEventListener("click", () => {
